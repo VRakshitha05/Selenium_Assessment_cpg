@@ -1,0 +1,55 @@
+package Assignment;
+
+import java.time.Duration;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Assignment2 {
+	public static void main(String[] args) throws InterruptedException {
+WebDriver driver=new ChromeDriver();
+		
+		//Maximize the browser window
+		driver.manage().window().maximize();
+		
+		//Apply implicit wait
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		
+		//Navigate to the Myntra application
+		driver.get("https://www.myntra.com/");
+		Thread.sleep(2000);
+		
+		//Search for any Product
+		driver.findElement(By.xpath("//input[@class=\"desktop-searchBar\"]")).sendKeys("flowers",Keys.ENTER);
+		Thread.sleep(2000);
+		
+//		//click on the Product
+//		driver.findElement(By.xpath("(//img[@class='img-responsive'])[4]")).click();
+//		Thread.sleep(2000);
+		
+		//Add the Product to Wishlist
+	 WebElement ele = driver.findElement(By.xpath("(//span[@class='myntraweb-sprite product-notWishlistedIcon sprites-notWishlisted'])"));
+		Thread.sleep(2000);
+		
+		//Typecast WebDriver to JavascriptExecutor(Downcast)
+		JavascriptExecutor js=(JavascriptExecutor)driver;
+		
+		//handling the hidden element
+		js.executeScript("arguments[0].click()", ele);
+		
+		//verify whether product is added or not
+		String url=driver.getCurrentUrl();
+		if(url.contains("https://www.myntra.com/login?referer=https://www.myntra.com/flowers?rawQuery=flowers"))
+			System.out.println("Product is added to wishlist");
+		else
+			System.out.println("Product is not added to wishlist");
+		
+		//close the browser
+		Thread.sleep(5000);
+		driver.quit();
+	}
+
+}
