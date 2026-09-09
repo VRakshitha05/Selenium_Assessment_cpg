@@ -1,0 +1,57 @@
+package Assignment;
+
+import java.time.Duration;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Assignment4 {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		driver.get("https://www.facebook.com/");
+		
+		//domattribute and property
+		WebElement email = driver.findElement(By.name("email"));
+		String attributeBefore = email.getDomAttribute("value");
+		String propertyBefore = email.getDomProperty("value");
+		System.out.println("DOM Attribute BEFORE entering email:" + attributeBefore);
+        System.out.println("DOM Property BEFORE entering email: " + propertyBefore);
+		Thread.sleep(2000);
+		email.sendKeys("kavya@gmail.com");
+        String attributeAfter = email.getDomAttribute("value");
+        String propertyAfter = email.getDomProperty("value");
+        System.out.println("DOM Attribute AFTER entering email: "+ attributeAfter);
+        System.out.println("DOM Property AFTER entering email:"+ propertyAfter);
+
+        //location of create account
+		WebElement ca = driver.findElement(By.xpath("//span[text()='Create new account']"));
+		int x = ca.getLocation().getX();
+		int y = ca.getLocation().getY();
+		System.out.println("X Location:" + x);
+		System.out.println("Y Location:" + y);
+		ca.click();
+		Thread.sleep(3000);
+		
+		//size od submit btn
+		WebElement submit = driver.findElement(By.xpath("//span[text()='Submit']"));
+		int submitH = submit.getSize().height;
+		int submitW = submit.getSize().width;
+		System.out.println("Height of submit button:" + submitH);
+		System.out.println("Weight of submit button:" + submitW);
+		
+		//cssproperties
+		WebElement css = driver.findElement(By.xpath("//span[text()='Submit']"));
+		System.out.println(css.getCssValue("font-family"));
+		System.out.println(css.getCssValue("font-size"));
+		System.out.println(css.getCssValue("line-height"));
+		
+		
+
+	}
+
+}
