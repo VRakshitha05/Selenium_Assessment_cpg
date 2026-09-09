@@ -1,3 +1,12 @@
+--------------------------------------------
+TestCase-2
+
+1. Navigate to Myntra application.
+2. Search for any product.
+3. Add the product to the wishlist.
+4. Verify whether it is added or not.
+----------------------------------------------
+
 package Assignment;
 
 import java.time.Duration;
