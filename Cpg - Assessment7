@@ -36,7 +36,7 @@ public class Assignment7 {
 		WebElement dateField = driver.findElement(By.cssSelector("[type='text']"));
 		String actualDate = dateField.getAttribute("value");
 		System.out.println("Selected date: " + actualDate);
-		if (actualDate.contains("05")) {
+		if (actualDate.contains("07")) {
 		    System.out.println("Date selected correctly");
 		} else {
 		    System.out.println("Date is Incorrect");
