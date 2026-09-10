@@ -1,0 +1,76 @@
+--------------------------------------------------------------------------
+//Test Case 1 
+
+1.Navigate EaseMyTrip and handle the notification popup.
+2.Select One Way.
+3.Enter any state  in the From field and select a valid suggestion.
+4.Enter another state  in the To field and select a valid suggestion.
+5.Click the Departure Date field.
+6.Select any available future date from the calendar.
+7.Click Traveller & Class.
+8.Select 2 Adults and keep the class as Economy.
+9.Click Search.
+10.Verify that the flight-results page is displayed.
+-------------------------------------------------------------------------------
+
+package Assignment;
+
+import java.time.Duration;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+public class Assignment6 {
+
+	public static void main(String[] args) throws InterruptedException {
+		ChromeOptions option = new ChromeOptions();
+		//option.addArguments("--disable-notification");
+		option.addArguments("--incognito");
+		WebDriver driver = new ChromeDriver(option);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		driver.get("https://www.easemytrip.com/");
+		Thread.sleep(3000);
+		//selecting from state
+		driver.findElement(By.className("innerspcr")).click();
+		WebElement from = driver.findElement(By.id("a_FromSector_show"));
+		from.click();
+		from.sendKeys("Bangalore");
+		driver.findElement(By.xpath("//span[text()='Bengaluru(BLR)']")).click();
+		
+		//selecting to state
+		WebElement to = driver.findElement(By.id("a_Editbox13_show"));
+		to.click();
+		to.sendKeys("Bangkok");
+		Thread.sleep(1000);
+		driver.findElement(By.xpath("//span[text()='Bangkok(BKK)']")).click();
+		
+		//selecting departure date
+		driver.findElement(By.id("frth_0_20/09/2026")).click();
+		
+		//clicking traveler and class
+		driver.findElement(By.id("ptravlrNo")).click();
+		driver.findElement(By.xpath("//button[text()='+']")).click();
+		driver.findElement(By.id("lbEconomy")).click();
+		driver.findElement(By.id("traveLer")).click();
+		
+		//click search
+		driver.findElement(By.cssSelector("[value='Search']")).click();
+		
+		Thread.sleep(3000);
+		//verify
+		String url = driver.getCurrentUrl();
+
+		if (url.contains("flight-search")) {
+		    System.out.println("Flight Results page is displayed");
+		} else {
+		    System.out.println("Flight Results page is NOT displayed");
+		}
+		
+		
+
+	}
+
+}
