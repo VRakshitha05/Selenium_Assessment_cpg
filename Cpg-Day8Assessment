@@ -1,0 +1,404 @@
+//Testcase
+
+Login to orangeHrm application ->click on Recruitment link -> click on + Add button -> enter firstname , middlename , lastname ,
+select any option for vacancy ,enter email, mobile number , upload file ,select date of application ->click on save button -> click on candidates ->
+select job title , select vacancy , select hiring manager ,select status , enter candidate name,select application date and click on search button -> 
+verify whether the employee is added from the records found section and logout.
+
+
+
+//LoginPage
+package Assignment;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+public class Login {
+
+	WebDriver driver;
+	
+	public Login(WebDriver driver)
+	{
+		this.driver=driver;
+		PageFactory.initElements(driver,this);
+	}
+	//declare
+		
+	@FindBy(name = "username")
+	private WebElement usernameTF;
+	
+	@FindBy(name = "password")
+	private WebElement passwordTF;
+	
+	@FindBy(xpath = "//button[@type='submit']")
+	private WebElement loginButton;
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void getUsernameTF(String value)
+	{
+		usernameTF.sendKeys(value);
+	}
+
+	public void getPasswordTF(String value) 
+	{
+		passwordTF.sendKeys(value);
+	}
+
+	public void getLoginButton() 
+	{
+		loginButton.click();
+	}
+	
+	}
+
+
+
+//AddCandidatePage
+package Assignment;
+
+import java.io.File;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+public class Addcandidate {
+
+    WebDriver driver;
+
+    public Addcandidate(WebDriver driver) {
+        this.driver = driver;
+        PageFactory.initElements(driver, this);
+    }
+
+    @FindBy(name = "firstName")
+    private WebElement firstName;
+
+    @FindBy(name = "middleName")
+    private WebElement middleName;
+
+    @FindBy(name = "lastName")
+    private WebElement lastName;
+
+    @FindBy(xpath = "//label[text()='Vacancy']/following::div[contains(@class,'oxd-select-text')][1]")
+    private WebElement vacancy;
+
+    @FindBy(xpath = "(//input[@placeholder='Type here'])[1]")
+    private WebElement email;
+
+    @FindBy(xpath = "(//input[@placeholder='Type here'])[2]")
+    private WebElement mobile;
+
+    @FindBy(xpath = "//input[@type='file']")
+    private WebElement resume;
+
+    @FindBy(xpath = "//button[@type='submit']")
+    private WebElement saveButton;
+
+
+    public void getFirstName(String value) {
+        firstName.sendKeys(value);
+    }
+
+    public void getMiddleName(String value) {
+        middleName.sendKeys(value);
+    }
+
+    public void getLastName(String value) {
+        lastName.sendKeys(value);
+    }
+
+    public void getVacancy(String value) {
+
+        vacancy.click();
+
+        driver.findElement(
+                By.xpath("//div[@role='option']//span[text()='"
+                        + value + "']"))
+                .click();
+    }
+
+    public void getEmail(String value) {
+        email.sendKeys(value);
+    }
+
+    public void getMobile(String value) {
+        mobile.sendKeys(value);
+    }
+
+    public void getResume(String path) {
+
+        File file = new File(path);
+
+        if (file.exists()) {
+
+            System.out.println(
+                    "Resume found: " + file.getAbsolutePath());
+
+            resume.sendKeys(
+                    file.getAbsolutePath());
+
+            System.out.println(
+                    "Resume uploaded successfully");
+
+        } else {
+
+            System.out.println(
+                    "Resume NOT FOUND: "
+                    + file.getAbsolutePath());
+        }
+    }
+
+    public void getSaveButton() {
+
+        saveButton.click();
+
+        System.out.println(
+                "Candidate created successfully");
+    }
+}
+
+//Recruitmentclass page
+package Assignment;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+public class Recruitmentclass {
+
+	public Recruitmentclass(WebDriver driver) {
+		PageFactory.initElements(driver, this);
+	}
+
+	@FindBy(xpath = "//span[text()='Recruitment']")
+	private WebElement recruitment;
+
+	@FindBy(xpath = "//button[contains(.,'Add')]")
+	private WebElement addButton;
+
+	public void getRecruitment() {
+		recruitment.click();
+	}
+
+	public void getAddButton() {
+		addButton.click();
+	}
+}
+
+//OrangeHrmPage
+package Assignment;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Properties;
+
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Orangehrm {
+
+    public static void main(String[] args) throws IOException {
+
+        // ==============================
+        // Read Properties File
+        // ==============================
+
+        FileInputStream fis = new FileInputStream(
+                "./src/main/resources/hrmm.properties");
+
+        Properties p = new Properties();
+
+        p.load(fis);
+
+        String url = p.getProperty("url");
+        String username = p.getProperty("Username");
+        String password = p.getProperty("Password");
+
+
+        // ==============================
+        // Read Excel File
+        // ==============================
+
+        FileInputStream fis1 = new FileInputStream(
+                "./src/main/resources/day8.xlsx");
+
+        Workbook wb = WorkbookFactory.create(fis1);
+
+        DataFormatter df = new DataFormatter();
+
+
+        String firstName = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(0));
+
+        String middleName = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(1));
+
+        String lastName = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(2));
+
+        String vacancy = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(3));
+
+        String email = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(4));
+
+        String mobile = df.formatCellValue(
+                wb.getSheet("Sheet1").getRow(1).getCell(5));
+
+
+        // ==============================
+        // Resume Path
+        // ==============================
+
+        String resume =
+                "C:\\Users\\rithv\\Desktop\\finalllll remuneeeee1.pdf";
+
+
+        // ==============================
+        // Print Details
+        // ==============================
+
+        System.out.println("First Name : " + firstName);
+        System.out.println("Middle Name : " + middleName);
+        System.out.println("Last Name  : " + lastName);
+        System.out.println("Vacancy    : " + vacancy);
+        System.out.println("Email      : " + email);
+        System.out.println("Mobile     : " + mobile);
+        System.out.println("Resume     : " + resume);
+
+
+        // ==============================
+        // Start Chrome
+        // ==============================
+
+        System.out.println("Starting Chrome...");
+
+        WebDriverManager.chromedriver().setup();
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.manage().window().maximize();
+
+        driver.manage().timeouts().implicitlyWait(
+                Duration.ofSeconds(10));
+
+
+        // ==============================
+        // Open OrangeHRM
+        // ==============================
+
+        driver.get(url);
+
+
+        // ==============================
+        // Login
+        // ==============================
+
+        Login login = new Login(driver);
+
+        login.getUsernameTF(username);
+
+        login.getPasswordTF(password);
+
+        login.getLoginButton();
+
+
+        // ==============================
+        // Recruitment
+        // ==============================
+
+        Recruitmentclass recruitment =
+                new Recruitmentclass(driver);
+
+        recruitment.getRecruitment();
+
+        recruitment.getAddButton();
+
+
+        // ==============================
+        // Add Candidate
+        // ==============================
+
+        Addcandidate candidate =
+                new Addcandidate(driver);
+
+        candidate.getFirstName(firstName);
+
+        candidate.getMiddleName(middleName);
+
+        candidate.getLastName(lastName);
+
+        candidate.getVacancy(vacancy);
+
+        candidate.getEmail(email);
+
+        candidate.getMobile(mobile);
+
+
+        // ==============================
+        // Upload Resume
+        // ==============================
+
+        System.out.println(
+                "Resume path: " + resume);
+
+        candidate.getResume(resume);
+
+
+     // ==============================
+     // Save Candidate
+     // ==============================
+
+     candidate.getSaveButton();
+
+
+     // ==============================
+     // Keep Chrome Open for 30 Seconds
+     // ==============================
+
+     System.out.println("Candidate created successfully");
+     System.out.println("Chrome will remain open for 30 seconds...");
+
+     try {
+         Thread.sleep(30000);
+     } catch (InterruptedException e) {
+         e.printStackTrace();
+     }
+
+
+     // ==============================
+     // Close Files
+     // ==============================
+
+     wb.close();
+     fis.close();
+     fis1.close();
+
+
+     // ==============================
+     // Close Browser
+     // ==============================
+
+     driver.quit();
+
+     System.out.println("Chrome closed.");
+
+
+    }
+}
