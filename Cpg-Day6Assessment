@@ -1,0 +1,127 @@
+---------------------------------------------------------------------------------------------------------------------------------------------
+//Test case 
+Login to orangeHrm application -> Click on PIM link -> click on +Add button ->enter firstname , middlename, lastname , employeeId -> 
+click on Create Login Details toggle button -> enter username , password and confirm password -> click on save button-> 
+click on Admin link -> enter username , select role ,enter employee name and select status -> click on search button
+->verify whether the emplyoee is added from the records found section and logout.
+Note: store the common data in property file and testscript data in excel file.
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+package Day6_assessment;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.locators.RelativeLocator;
+
+public class Day6_test_case1 {
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		FileInputStream fis=new FileInputStream("./src/test/resources/DDT/orangeHRM.properties");
+		Properties p=new Properties();
+		p.load(fis);
+		String BROWSER=p.getProperty("Browser");
+		String URL=p.getProperty("URL");
+		String username = p.getProperty("username");
+		String pass=p.getProperty("Password");
+		WebDriver driver=null;
+		if(BROWSER.contains("chrome"))
+		{
+			driver= new ChromeDriver();
+		}
+		if(BROWSER.contains("edge"))
+		{
+			driver= new EdgeDriver();
+		}
+		if(BROWSER.contains("firefox"))
+		{
+			driver= new FirefoxDriver();
+		}
+		driver.manage().window().maximize();
+		driver.get(URL);
+		Thread.sleep(2000);
+		driver.findElement(By.cssSelector("[name='username']")).sendKeys(username);
+		driver.findElement(By.cssSelector("[type='password']")).sendKeys(pass);
+		driver.findElement(By.cssSelector("[type='submit']")).click();
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//span[text()='PIM']")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.cssSelector("[class='oxd-icon bi-plus oxd-button-icon']")).click();
+		FileInputStream file=new FileInputStream("./src/test/resources/DDT/orangeHRM1.xlsx");
+		Workbook wb = WorkbookFactory.create(file);
+		DataFormatter df=new DataFormatter();
+		String fn=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(0));
+		String mn=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(1));
+		String ln=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(2));
+		String empId=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(3));
+		String user=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(4));
+		String password=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(5));
+		String cnfPass=df.formatCellValue(wb.getSheet("Sheet1").getRow(1).getCell(6));
+		driver.findElement(By.cssSelector("[name='firstName']")).sendKeys(fn);
+		driver.findElement(By.cssSelector("[name='middleName']")).sendKeys(mn);
+		driver.findElement(By.cssSelector("[name='lastName']")).sendKeys(ln);
+		driver.findElement(By.xpath("(//input[@class='oxd-input oxd-input--active'])[2]")).sendKeys(empId);
+		driver.findElement(By.cssSelector("[class='oxd-switch-input oxd-switch-input--active --label-right']")).click();
+		driver.findElement(By.xpath("(//input[@class='oxd-input oxd-input--active'])[3]")).sendKeys(user);
+		//Thread.sleep(1000);
+		driver.findElement(By.xpath("(//input[@type='password'])[1]")).sendKeys(password);
+		driver.findElement(By.xpath("(//input[@type='password'])[2]")).sendKeys(cnfPass);
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//span[text()='Admin']")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("(//input[@class='oxd-input oxd-input--active'])[2]")).sendKeys(user);
+		driver.findElement(By.xpath("(//div[@class='oxd-select-text-input'])[1]")).click();
+		driver.findElement(By.xpath("//div[@class='oxd-select-dropdown --positon-bottom']/descendant::span[text()='ESS']")).click();
+		WebElement empName = driver.findElement(By.cssSelector("[placeholder='Type for hints...']"));
+		empName.sendKeys(fn," ",mn," ",ln);
+		Thread.sleep(2000);
+		empName.sendKeys(Keys.DOWN,Keys.ENTER);
+		driver.findElement(By.xpath("(//div[@class='oxd-select-text-input'])[2]")).click();
+		driver.findElement(By.xpath("//div[@class='oxd-select-dropdown --positon-bottom']/descendant::span[text()='Enabled']")).click();
+		driver.findElement(By.xpath("//button[text()=' Search ']")).click();
+		Thread.sleep(2000);
+		String record=driver.findElement(By.xpath("//div[text()='anushaj']")).getText();
+		if(record.equals(user))
+		{
+			System.out.println("record found");
+		}
+		else
+		{
+			System.out.println("record not found");
+		}
+		
+		
+	}
+
+}
+
+//Excel File
+---------------------------------------------------------------------------------------
+firstName	middleName	lastName	empId	username	password	confirmpass
+Anusha			jade	shiva		1918	anushaj		anusha@111		anusha@111
+----------------------------------------------------------------------------------------
+
+//Properties file
+Browser chrome
+URL https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
+username Admin
+Password admin123
