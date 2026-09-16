@@ -81,6 +81,14 @@ public class OrangeHrmTestCase {
 	}
 
 }
+
+//Excel File
+-----------------------------------------------------------------------------------------------
+Browser	url																	username	password
+chrome	https://opensource-demo.orangehrmlive.com/web/index.php/auth/login	Admin		admin123
+-----------------------------------------------------------------------------------------------
+
+
 --------------------------------------------------------------------
 //Testcase 3 
 
