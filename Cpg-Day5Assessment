@@ -148,4 +148,18 @@ public class QspidersTestCase {
 
 }
 
+//DemoWebShop.properties
+Browser chrome
+URL https://demowebshop.tricentis.com
+Email rakshu@gmail.com
+Password rakshu@2026
+
+//Demoappqspiders.json
+"browser":"chrome",
+"url":"https://demoapps.qspiders.com/ui",
+"name":"anusha"
+"EmailId":"anusha@gmail.com",
+"password":"anusha@2026"
+}
+
 
