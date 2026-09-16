@@ -1,0 +1,178 @@
+//Keywords.java
+package Keywordframework;
+
+import KeyWordDriven.KeywordExecutors;
+
+public class Keywords {
+
+    public static void main(String[] args) {
+
+        KeywordExecutors e = new KeywordExecutors();
+
+        e.executors("LAUNCH_BROWSER");
+
+        e.executors("OPEN_URL");
+
+        e.executors("ENTER_USERNAME");
+
+        e.executors("ENTER_PASSWORD");
+
+        e.executors("CLICK_LOGIN");
+
+        e.executors("ADD_PRODUCT");
+
+        e.executors("OPEN_CART");
+
+        e.executors("CLOSE_BROWSER");
+
+    }
+}
+
+//KeyWordImplementation
+
+package KeyWordDriven;
+
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class KeyWordImplementation {
+
+    WebDriver driver;
+
+    public void launchbrowser() {
+
+        driver = new ChromeDriver();
+
+        driver.manage().window().maximize();
+
+        driver.manage().timeouts().implicitlyWait(
+                Duration.ofSeconds(10));
+
+       
+    }
+
+    public void openurl() {
+
+        driver.get("https://www.saucedemo.com/");
+
+        
+    }
+
+    public void enterusername() {
+
+        driver.findElement(By.id("user-name"))
+                .sendKeys("standard_user");
+
+      
+    }
+
+    public void enterpassword() {
+
+        driver.findElement(By.id("password"))
+                .sendKeys("secret_sauce");
+
+    }
+
+    public void clicklogin() {
+
+        driver.findElement(By.id("login-button"))
+                .click();
+
+       
+    }
+
+    public void addproduct() {
+
+        driver.findElement(
+                By.id("add-to-cart-sauce-labs-backpack"))
+                .click();
+
+       
+
+        System.out.println("Product Added to cart");
+
+        
+    }
+
+    public void opencart() {
+
+        driver.findElement(By.className("shopping_cart_link"))
+                .click();
+
+       
+    }
+
+    public void closebrowser() {
+
+        
+
+        
+
+    }
+
+    
+}
+
+// KeywordExecutors
+
+package KeyWordDriven;
+
+public class KeywordExecutors {
+
+    KeyWordImplementation k = new KeyWordImplementation();
+
+    public void executors(String keyword) {
+
+        if (keyword.equals("LAUNCH_BROWSER")) {
+
+            k.launchbrowser();
+
+        }
+
+        else if (keyword.equals("OPEN_URL")) {
+
+            k.openurl();
+
+        }
+
+        else if (keyword.equals("ENTER_USERNAME")) {
+
+            k.enterusername();
+
+        }
+
+        else if (keyword.equals("ENTER_PASSWORD")) {
+
+            k.enterpassword();
+
+        }
+
+        else if (keyword.equals("CLICK_LOGIN")) {
+
+            k.clicklogin();
+
+        }
+
+        else if (keyword.equals("ADD_PRODUCT")) {
+
+            k.addproduct();
+
+        }
+
+        else if (keyword.equals("OPEN_CART")) {
+
+            k.opencart();
+
+        }
+
+        else if (keyword.equals("CLOSE_BROWSER")) {
+
+            k.closebrowser();
+
+        }
+
+    }
+}
