@@ -12,14 +12,9 @@ public class RecruitmentPage {
     WebDriver driver;
     WebDriverWait wait;
 
-    By recruitmentMenu = By.xpath(
-            "//span[normalize-space()='Recruitment']");
-
-    By vacanciesMenu = By.xpath(
-            "//a[normalize-space()='Vacancies']");
-
-    By addButton = By.xpath(
-            "//button[normalize-space()='Add']");
+    By recruitmentMenu = By.xpath("//span[text()='Recruitment']");
+    By vacanciesMenu = By.xpath("//a[text()='Vacancies']");
+    By addButton = By.xpath("//button[normalize-space()='Add']");
 
     public RecruitmentPage(WebDriver driver) {
         this.driver = driver;
@@ -28,19 +23,16 @@ public class RecruitmentPage {
 
     public void openVacancyPage() {
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(recruitmentMenu))
+        wait.until(ExpectedConditions.elementToBeClickable(recruitmentMenu))
                 .click();
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(vacanciesMenu))
+        wait.until(ExpectedConditions.elementToBeClickable(vacanciesMenu))
                 .click();
     }
 
     public void clickAddVacancy() {
 
-        wait.until(ExpectedConditions
-                .elementToBeClickable(addButton))
+        wait.until(ExpectedConditions.elementToBeClickable(addButton))
                 .click();
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="OrangeHRM Suite">
+
+    <test name="Update Employee Details Test">
+
+        <classes>
+            <class name="tests.MyInfoTest"/>
+        </classes>
+
+    </test>
+
+</suite>

@@ -14,16 +14,14 @@ public class ConfigReader {
                     .getResourceAsStream("config.properties");
 
             if (input == null) {
-                throw new RuntimeException(
-                        "config.properties file not found");
+                throw new RuntimeException("config.properties not found");
             }
 
             properties.load(input);
             input.close();
 
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Unable to load config.properties", e);
+            e.printStackTrace();
         }
     }
 
