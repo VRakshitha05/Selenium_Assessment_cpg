@@ -1,9 +1,7 @@
-
 package utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,33 +9,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExcelReader {
 
-    public static String getData(String sheetName, int rowNumber,
-                                 int columnNumber) {
+    public static String getData(
+            String sheetName, int rowNumber, int columnNumber) {
 
-        Workbook workbook = null;
+        String filePath = "src/test/resources/TestData.xlsx";
 
-        try {
-            InputStream inputStream = null;
-
-            // First, try to read from src/test/resources
-            inputStream = ExcelReader.class.getClassLoader()
-                    .getResourceAsStream("TestData.xlsx");
-
-            // If the resource is not found, use the project path
-            if (inputStream == null) {
-                File excelFile = new File(
-                        "src/test/resources/TestData.xlsx");
-
-                if (!excelFile.exists()) {
-                    throw new RuntimeException(
-                            "Excel file not found at: "
-                            + excelFile.getAbsolutePath());
-                }
-
-                inputStream = new FileInputStream(excelFile);
-            }
-
-            workbook = WorkbookFactory.create(inputStream);
+        try (FileInputStream input =
+                     new FileInputStream(new File(filePath));
+             Workbook workbook = WorkbookFactory.create(input)) {
 
             if (workbook.getSheet(sheetName) == null) {
                 throw new RuntimeException(
@@ -46,29 +25,15 @@ public class ExcelReader {
 
             DataFormatter formatter = new DataFormatter();
 
-            String data = formatter.formatCellValue(
+            return formatter.formatCellValue(
                     workbook.getSheet(sheetName)
                             .getRow(rowNumber)
-                            .getCell(columnNumber)
-            );
-
-            inputStream.close();
-
-            return data;
+                            .getCell(columnNumber));
 
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Unable to read Excel data. Check file path, "
-                    + "sheet name, row and column.", e);
-
-        } finally {
-            try {
-                if (workbook != null) {
-                    workbook.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    "Unable to read Excel file from: "
+                    + new File(filePath).getAbsolutePath(), e);
         }
     }
 }
