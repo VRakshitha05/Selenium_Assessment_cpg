@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -13,26 +14,28 @@ public class VacancyPage {
     WebDriverWait wait;
 
     By vacancyName = By.xpath(
-            "//label[text()='Vacancy Name']/ancestor::div[contains(@class,'oxd-input-group')]//input"
-    );
+            "//label[normalize-space()='Vacancy Name']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input");
 
     By jobTitleDropdown = By.xpath(
-            "//label[text()='Job Title']/ancestor::div[contains(@class,'oxd-input-group')]//div[contains(@class,'oxd-select-text')]"
-    );
+            "//label[normalize-space()='Job Title']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]"
+            + "//div[contains(@class,'oxd-select-text')]");
 
     By description = By.xpath(
-            "//label[text()='Description']/ancestor::div[contains(@class,'oxd-input-group')]//textarea"
-    );
+            "//label[normalize-space()='Description']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//textarea");
 
     By hiringManager = By.xpath(
-            "//label[text()='Hiring Manager']/ancestor::div[contains(@class,'oxd-input-group')]//input"
-    );
+            "//label[normalize-space()='Hiring Manager']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input");
 
     By numberOfPositions = By.xpath(
-            "//label[text()='Number of Positions']/ancestor::div[contains(@class,'oxd-input-group')]//input"
-    );
+            "//label[normalize-space()='Number of Positions']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input");
 
-    By saveButton = By.xpath("//button[@type='submit']");
+    By saveButton = By.xpath(
+            "//button[@type='submit']");
 
     public VacancyPage(WebDriver driver) {
         this.driver = driver;
@@ -41,62 +44,69 @@ public class VacancyPage {
 
     public void enterVacancyName(String name) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(vacancyName))
-                .sendKeys(name);
+        WebElement field = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(vacancyName));
+
+        field.clear();
+        field.sendKeys(name);
     }
 
     public void selectJobTitle(String jobTitle) {
 
-        wait.until(ExpectedConditions.elementToBeClickable(jobTitleDropdown))
+        wait.until(ExpectedConditions
+                .elementToBeClickable(jobTitleDropdown))
                 .click();
 
         By jobTitleOption = By.xpath(
-                "//div[@role='option']//span[normalize-space()='" + jobTitle + "']"
-        );
+                "//div[@role='option']//span[normalize-space()='"
+                + jobTitle + "']");
 
-        wait.until(ExpectedConditions.elementToBeClickable(jobTitleOption))
+        wait.until(ExpectedConditions
+                .elementToBeClickable(jobTitleOption))
                 .click();
     }
 
     public void enterDescription(String text) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(description))
-                .sendKeys(text);
+        WebElement field = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(description));
+
+        field.clear();
+        field.sendKeys(text);
     }
 
-    public void selectHiringManager(String manager) {
+    public void selectHiringManager(String managerName) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(hiringManager))
-                .sendKeys(manager);
+        WebElement managerField = wait.until(ExpectedConditions
+                .elementToBeClickable(hiringManager));
 
-        By managerOption = By.xpath(
-                "//div[@role='option']//span[contains(normalize-space(),'" + manager + "')]"
-        );
+        managerField.click();
+        managerField.clear();
+        managerField.sendKeys(managerName);
 
-        wait.until(ExpectedConditions.elementToBeClickable(managerOption))
+        // Select the first available suggestion.
+        // This supports names such as Rahul Mulge Patil.
+        By suggestion = By.xpath(
+                "//div[@role='option'][1]");
+
+        wait.until(ExpectedConditions
+                .elementToBeClickable(suggestion))
                 .click();
     }
 
     public void enterNumberOfPositions(String positions) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(numberOfPositions))
-                .sendKeys(positions);
+        WebElement field = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(numberOfPositions));
+
+        field.clear();
+        field.sendKeys(positions);
     }
 
     public void clickSave() {
 
-        wait.until(ExpectedConditions.elementToBeClickable(saveButton))
+        wait.until(ExpectedConditions
+                .elementToBeClickable(saveButton))
                 .click();
-    }
-
-    public boolean isVacancySaved() {
-
-        By vacancyListHeading = By.xpath(
-                "//h6[normalize-space()='Vacancies']"
-        );
-
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(vacancyListHeading)
-        ).isDisplayed();
     }
 }
