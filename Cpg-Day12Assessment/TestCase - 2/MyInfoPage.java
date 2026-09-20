@@ -1,8 +1,10 @@
 package pages;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,34 +15,59 @@ public class MyInfoPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private JavascriptExecutor js;
+
+    // =========================
+    // LOCATORS
+    // =========================
 
     private By myInfoMenu =
             By.xpath("//a[contains(@href,'viewMyDetails')]");
 
     private By firstNameField =
-            By.name("firstName");
+            By.cssSelector("input[name='firstName']");
 
     private By lastNameField =
-            By.name("lastName");
+            By.cssSelector("input[name='lastName']");
 
+    /*
+     * Employee ID is located using its label because the
+     * input does not reliably expose name='employeeId'.
+     */
     private By employeeIdField =
             By.xpath(
-                    "//label[contains(normalize-space(),'Employee Id')]"
-                    + "/ancestor::div[contains(@class,'oxd-input-group')]"
-                    + "//input"
+                    "//label[contains(normalize-space(),'Employee Id')]" +
+                    "/ancestor::div[contains(@class,'oxd-input-group')]" +
+                    "//input"
             );
 
+    /*
+     * First Save button on the Personal Details section.
+     */
     private By personalDetailsSaveButton =
             By.xpath("(//button[@type='submit'])[1]");
 
+    // =========================
+    // CONSTRUCTOR
+    // =========================
+
     public MyInfoPage(WebDriver driver) {
+
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        this.wait =
+                new WebDriverWait(
+                        driver,
+                        Duration.ofSeconds(30)
+                );
+
+        this.js =
+                (JavascriptExecutor) driver;
     }
 
-    // ==================================================
+    // =========================
     // OPEN MY INFO
-    // ==================================================
+    // =========================
 
     public void clickMyInfo() {
 
@@ -48,114 +75,236 @@ public class MyInfoPage {
 
         WebElement myInfo =
                 wait.until(
-                        ExpectedConditions.elementToBeClickable(myInfoMenu)
+                        ExpectedConditions.elementToBeClickable(
+                                myInfoMenu
+                        )
                 );
 
         myInfo.click();
 
         wait.until(
-                ExpectedConditions.visibilityOfElementLocated(firstNameField)
+                ExpectedConditions.visibilityOfElementLocated(
+                        firstNameField
+                )
         );
 
         System.out.println("My Info page loaded");
+
+        /*
+         * Wait until OrangeHRM has populated the
+         * First Name field.
+         */
+        wait.until(driver -> {
+
+            try {
+
+                WebElement first =
+                        getVisibleElement(firstNameField);
+
+                String value =
+                        getInputValue(first);
+
+                return value != null
+                        && !value.trim().isEmpty();
+
+            } catch (Exception e) {
+
+                return false;
+            }
+        });
+
+        System.out.println(
+                "Personal Details fields loaded successfully"
+        );
     }
 
-    // ==================================================
+    // =========================
     // CHANGE FIRST NAME
-    // ==================================================
+    // =========================
 
     public void changeFirstName(String firstName) {
 
-        System.out.println("Changing first name to: " + firstName);
+        System.out.println(
+                "Changing first name to: " + firstName
+        );
 
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                firstNameField
-                        )
-                );
+                getVisibleElement(firstNameField);
+
+        String before =
+                getInputValue(field);
 
         System.out.println(
                 "First name before change: [" +
-                field.getDomProperty("value") + "]"
+                before +
+                "]"
         );
 
+        scrollIntoView(field);
+
         field.click();
-        field.sendKeys(Keys.CONTROL, "a");
-        field.sendKeys(Keys.BACK_SPACE);
+
+        field.sendKeys(
+                Keys.CONTROL,
+                "a"
+        );
+
+        field.sendKeys(
+                Keys.BACK_SPACE
+        );
+
         field.sendKeys(firstName);
+
+        String after =
+                getInputValue(field);
 
         System.out.println(
                 "First name after change: [" +
-                field.getDomProperty("value") + "]"
+                after +
+                "]"
         );
+
+        if (!firstName.equals(after)) {
+
+            setValueUsingJavaScript(
+                    field,
+                    firstName
+            );
+
+            System.out.println(
+                    "First name after JavaScript update: [" +
+                    getInputValue(field) +
+                    "]"
+            );
+        }
     }
 
-    // ==================================================
+    // =========================
     // CHANGE LAST NAME
-    // ==================================================
+    // =========================
 
     public void changeLastName(String lastName) {
 
-        System.out.println("Changing last name to: " + lastName);
+        System.out.println(
+                "Changing last name to: " + lastName
+        );
 
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                lastNameField
-                        )
-                );
+                getVisibleElement(lastNameField);
+
+        String before =
+                getInputValue(field);
 
         System.out.println(
                 "Last name before change: [" +
-                field.getDomProperty("value") + "]"
+                before +
+                "]"
         );
 
+        scrollIntoView(field);
+
         field.click();
-        field.sendKeys(Keys.CONTROL, "a");
-        field.sendKeys(Keys.BACK_SPACE);
+
+        field.sendKeys(
+                Keys.CONTROL,
+                "a"
+        );
+
+        field.sendKeys(
+                Keys.BACK_SPACE
+        );
+
         field.sendKeys(lastName);
+
+        String after =
+                getInputValue(field);
 
         System.out.println(
                 "Last name after change: [" +
-                field.getDomProperty("value") + "]"
+                after +
+                "]"
         );
+
+        if (!lastName.equals(after)) {
+
+            setValueUsingJavaScript(
+                    field,
+                    lastName
+            );
+
+            System.out.println(
+                    "Last name after JavaScript update: [" +
+                    getInputValue(field) +
+                    "]"
+            );
+        }
     }
 
-    // ==================================================
+    // =========================
     // CHANGE EMPLOYEE ID
-    // ==================================================
+    // =========================
 
     public void changeEmployeeId(String employeeId) {
 
-        System.out.println("Changing Employee ID to: " + employeeId);
+        System.out.println(
+                "Changing Employee ID to: " +
+                employeeId
+        );
 
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                employeeIdField
-                        )
-                );
+                getVisibleElement(employeeIdField);
+
+        String before =
+                getInputValue(field);
 
         System.out.println(
                 "Employee ID before change: [" +
-                field.getDomProperty("value") + "]"
+                before +
+                "]"
         );
 
+        scrollIntoView(field);
+
         field.click();
-        field.sendKeys(Keys.CONTROL, "a");
-        field.sendKeys(Keys.BACK_SPACE);
+
+        field.sendKeys(
+                Keys.CONTROL,
+                "a"
+        );
+
+        field.sendKeys(
+                Keys.BACK_SPACE
+        );
+
         field.sendKeys(employeeId);
+
+        String after =
+                getInputValue(field);
 
         System.out.println(
                 "Employee ID after change: [" +
-                field.getDomProperty("value") + "]"
+                after +
+                "]"
         );
+
+        if (!employeeId.equals(after)) {
+
+            setValueUsingJavaScript(
+                    field,
+                    employeeId
+            );
+
+            System.out.println(
+                    "Employee ID after JavaScript update: [" +
+                    getInputValue(field) +
+                    "]"
+            );
+        }
     }
 
-    // ==================================================
-    // SAVE AND WAIT FOR VALUES
-    // ==================================================
+    // =========================
+    // SAVE
+    // =========================
 
     public void clickSave(
             String expectedFirstName,
@@ -172,141 +321,241 @@ public class MyInfoPage {
                 );
 
         System.out.println("Save button found");
+
         System.out.println(
-                "Save button text: " + saveButton.getText()
+                "Save button text: " +
+                saveButton.getText()
         );
+
+        scrollIntoView(saveButton);
 
         saveButton.click();
 
+        System.out.println(
+                "Save button clicked"
+        );
+
         /*
-         * Wait until OrangeHRM has actually processed the update.
-         * Instead of assuming that clicking Save means the operation
-         * is finished, wait until all three fields contain the
-         * expected values.
+         * Wait until all three fields contain
+         * the values entered from Excel.
          */
         wait.until(driver -> {
 
-            String first =
-                    driver.findElement(firstNameField)
-                          .getDomProperty("value");
+            try {
 
-            String last =
-                    driver.findElement(lastNameField)
-                          .getDomProperty("value");
+                String first =
+                        getInputValue(
+                                getVisibleElement(firstNameField)
+                        );
 
-            String empId =
-                    driver.findElement(employeeIdField)
-                          .getDomProperty("value");
+                String last =
+                        getInputValue(
+                                getVisibleElement(lastNameField)
+                        );
 
-            return expectedFirstName.equals(first)
-                    && expectedLastName.equals(last)
-                    && expectedEmployeeId.equals(empId);
+                String empId =
+                        getInputValue(
+                                getVisibleElement(employeeIdField)
+                        );
+
+                System.out.println(
+                        "Checking saved values -> " +
+                        "First: [" + first + "] " +
+                        "Last: [" + last + "] " +
+                        "Employee ID: [" + empId + "]"
+                );
+
+                return expectedFirstName.equals(first)
+                        && expectedLastName.equals(last)
+                        && expectedEmployeeId.equals(empId);
+
+            } catch (Exception e) {
+
+                return false;
+            }
         });
 
         System.out.println(
                 "Employee details saved successfully"
         );
-
-        System.out.println(
-                "Saved First Name: [" + getFirstName() + "]"
-        );
-
-        System.out.println(
-                "Saved Last Name: [" + getLastName() + "]"
-        );
-
-        System.out.println(
-                "Saved Employee ID: [" + getEmployeeId() + "]"
-        );
     }
 
-    // ==================================================
+    // =========================
     // GET FIRST NAME
-    // ==================================================
+    // =========================
 
     public String getFirstName() {
 
-        waitForFieldValue(firstNameField);
-
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                firstNameField
-                        )
-                );
+                getVisibleElement(firstNameField);
 
-        String value = field.getDomProperty("value");
+        String value =
+                getInputValue(field);
 
         System.out.println(
-                "First Name read from page: [" + value + "]"
+                "First Name read from page: [" +
+                value +
+                "]"
         );
 
-        return value == null ? "" : value.trim();
+        return value == null
+                ? ""
+                : value.trim();
     }
 
-    // ==================================================
+    // =========================
     // GET LAST NAME
-    // ==================================================
+    // =========================
 
     public String getLastName() {
 
-        waitForFieldValue(lastNameField);
-
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                lastNameField
-                        )
-                );
+                getVisibleElement(lastNameField);
 
-        String value = field.getDomProperty("value");
+        String value =
+                getInputValue(field);
 
         System.out.println(
-                "Last Name read from page: [" + value + "]"
+                "Last Name read from page: [" +
+                value +
+                "]"
         );
 
-        return value == null ? "" : value.trim();
+        return value == null
+                ? ""
+                : value.trim();
     }
 
-    // ==================================================
+    // =========================
     // GET EMPLOYEE ID
-    // ==================================================
+    // =========================
 
     public String getEmployeeId() {
 
-        waitForFieldValue(employeeIdField);
-
         WebElement field =
-                wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(
-                                employeeIdField
-                        )
-                );
+                getVisibleElement(employeeIdField);
 
-        String value = field.getDomProperty("value");
+        String value =
+                getInputValue(field);
 
         System.out.println(
-                "Employee ID read from page: [" + value + "]"
+                "Employee ID read from page: [" +
+                value +
+                "]"
         );
 
-        return value == null ? "" : value.trim();
+        return value == null
+                ? ""
+                : value.trim();
     }
 
-    // ==================================================
-    // WAIT UNTIL FIELD IS POPULATED
-    // ==================================================
+    // =========================
+    // FIND VISIBLE ELEMENT
+    // =========================
 
-    private void waitForFieldValue(By locator) {
+    private WebElement getVisibleElement(By locator) {
 
-        wait.until(driver -> {
+        wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(
+                        locator
+                )
+        );
 
-            WebElement field =
-                    driver.findElement(locator);
+        List<WebElement> elements =
+                driver.findElements(locator);
 
-            String value =
-                    field.getDomProperty("value");
+        for (WebElement element : elements) {
 
-            return value != null && !value.trim().isEmpty();
-        });
+            try {
+
+                if (element.isDisplayed()
+                        && element.isEnabled()) {
+
+                    return element;
+                }
+
+            } catch (Exception e) {
+                // Continue searching
+            }
+        }
+
+        throw new RuntimeException(
+                "No visible and enabled element found for locator: "
+                + locator
+        );
+    }
+
+    // =========================
+    // READ INPUT VALUE
+    // =========================
+
+    private String getInputValue(WebElement element) {
+
+        String value =
+                element.getAttribute("value");
+
+        if (value == null || value.isEmpty()) {
+
+            value =
+                    element.getDomProperty("value");
+        }
+
+        if (value == null || value.isEmpty()) {
+
+            Object result =
+                    js.executeScript(
+                            "return arguments[0].value;",
+                            element
+                    );
+
+            if (result != null) {
+                value = result.toString();
+            }
+        }
+
+        return value == null
+                ? ""
+                : value;
+    }
+
+    // =========================
+    // SET VALUE USING JAVASCRIPT
+    // =========================
+
+    private void setValueUsingJavaScript(
+            WebElement element,
+            String value) {
+
+        js.executeScript(
+                "arguments[0].focus();" +
+                "arguments[0].value = '';" +
+                "arguments[0].dispatchEvent(" +
+                "new Event('input', { bubbles: true })" +
+                ");" +
+                "arguments[0].value = arguments[1];" +
+                "arguments[0].dispatchEvent(" +
+                "new Event('input', { bubbles: true })" +
+                ");" +
+                "arguments[0].dispatchEvent(" +
+                "new Event('change', { bubbles: true })" +
+                ");",
+                element,
+                value
+        );
+    }
+
+    // =========================
+    // SCROLL INTO VIEW
+    // =========================
+
+    private void scrollIntoView(WebElement element) {
+
+        js.executeScript(
+                "arguments[0].scrollIntoView({" +
+                "block: 'center'," +
+                "inline: 'nearest'" +
+                "});",
+                element
+        );
     }
 }
