@@ -23,12 +23,17 @@ public class LoginPage {
 
     public void login(String username, String password) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameField))
-                .sendKeys(username);
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(usernameField))
+                .clear();
 
+        driver.findElement(usernameField).sendKeys(username);
+
+        driver.findElement(passwordField).clear();
         driver.findElement(passwordField).sendKeys(password);
 
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton))
+        wait.until(ExpectedConditions
+                .elementToBeClickable(loginButton))
                 .click();
     }
 }
