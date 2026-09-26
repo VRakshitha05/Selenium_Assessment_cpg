@@ -1,0 +1,6 @@
+From,To,flight,price,airline,inputName,address,city,state,zipCode,cardType,creditCardNumber,creditCardMonth,creditCardYear,nameOnCard
+Paris,Rome,43,$472.56 ,Virgin America,sss,aaa,tyfj,vg,2111,sdd,4564,44,2010,efg
+Rome ,Pris,234,$432.98 ,United Airlines,vvv,bbb,fghfg,ggh,2111,dgd,4569,55,2012,efg
+Paris,London,9696,$200.98 ,Aer Lingus,abc,main,Maxico,London,12345,visa,1234,11,2017,abc
+Dubin,Paris,12,$765.32 ,Virgin America,xyz,ccc,gfhgjh,fff,4655,dffd,7894,66,2014,xyz
+Boston ,Rome,4346,$233.98 ,Lufthansa,efg,ddd,vvvj,fcg,4865,ffytf,5698,99,2016,zyx
